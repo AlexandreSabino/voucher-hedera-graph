@@ -2,6 +2,7 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.domains.VoucherEvent;
+import com.biscoito.voucher.exceptions.InsuficientFundsException;
 import com.biscoito.voucher.gateways.HederaHelper;
 import com.biscoito.voucher.gateways.VoucherEventGateway;
 import com.hedera.hashgraph.sdk.HederaException;
@@ -34,7 +35,7 @@ public class TransferToCustomer {
       var customerBalanceBefore = client.getAccountBalance(clientAccountId);
 
       if (nsBalanceBefore <= 0l) {
-        throw new RuntimeException("no money...");
+        throw new InsuficientFundsException("no money...");
       }
 
       log.debug("Ns balance before: {}", nsBalanceBefore);
