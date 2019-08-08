@@ -13,8 +13,4 @@ public class PasswordManager {
                 .hashString(pass, StandardCharsets.UTF_8)
                 .toString();
     }
-
-    public boolean compare(String pass, String hash) {
-        return encrypt(pass).equals(hash);
-    }
 }
