@@ -18,4 +18,9 @@ public class CustomerGatewayImpl implements CustomerGateway {
     public Optional<Customer> findOne(final String customerIdentifier) {
         return customerRepository.findById(customerIdentifier);
     }
+
+    @Override
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
 }

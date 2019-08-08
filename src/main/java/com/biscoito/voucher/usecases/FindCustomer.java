@@ -2,6 +2,7 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.gateways.CustomerGateway;
+import com.biscoito.voucher.usecases.exceptions.InvalidPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ public class FindCustomer {
         final Optional<Customer> customerOptional = customerGateway.findOne(customerIdentifier);
         if (customerOptional.isPresent()) {
             final Customer customer = customerOptional.get();
-            if (customer.getShaPassword().equals(hashPass)) {
-                throw new RuntimeException("Invalid password");
+            if (!customer.getShaPassword().equals(hashPass)) {
+                throw new InvalidPasswordException("Invalid password");
             }
             return customerOptional;
         }
