@@ -12,4 +12,6 @@ public class Customer {
     private String customerIdentifier;
 
     private String accountId;
+
+    private String shaPassword;
 }

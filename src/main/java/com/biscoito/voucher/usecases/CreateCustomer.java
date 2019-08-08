@@ -1,7 +1,7 @@
 package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
-import com.hedera.hashgraph.sdk.Client;
+import com.biscoito.voucher.gateways.HederaHelper;
 import com.hedera.hashgraph.sdk.HederaException;
 import com.hedera.hashgraph.sdk.account.AccountId;
 import com.hedera.hashgraph.sdk.crypto.ed25519.Ed25519PrivateKey;
@@ -14,15 +14,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CreateCustomer {
 
-    private final Client client;
+    private final HederaHelper hederaHelper;
 
-    public Customer execute(String customerIdentifier) {
+    private final PasswordManager passwordManager;
+
+    public Customer execute(final String customerIdentifier, final String pass) {
         try {
             var newKey = Ed25519PrivateKey.generate();
-            final AccountId account = client.createAccount(newKey.getPublicKey(), 0);
+            final AccountId account = hederaHelper.createHederaClient().createAccount(newKey.getPublicKey(), 0);
             return Customer.builder()
                     .accountId(account.toString())
                     .customerIdentifier(customerIdentifier)
+                    .shaPassword(passwordManager.encrypt(pass))
                     .build();
         } catch (HederaException e) {
             log.error(e.getMessage(), e);

@@ -17,8 +17,8 @@ public class FindOrCreateCustomerAccount {
 
     private final CreateCustomer createCustomer;
 
-    public Customer execute(final String customerIdentifier) {
+    public Customer execute(final String customerIdentifier, final String pass) {
         final Optional<Customer> customerOptional = customerGateway.findOne(customerIdentifier);
-        return customerOptional.orElseGet(() -> createCustomer.execute(customerIdentifier));
+        return customerOptional.orElseGet(() -> createCustomer.execute(customerIdentifier, pass));
     }
 }
