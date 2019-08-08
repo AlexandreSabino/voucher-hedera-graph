@@ -11,7 +11,7 @@ public class Voucher {
 
     private String id;
 
-    private String clientId;
+    private String customerIdentifier;
 
     private Long amount;
 
