@@ -23,6 +23,11 @@
 
 	<dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.hedera.hashgraph</groupId>
             <artifactId>sdk</artifactId>
             <version>${sdk.version}</version>
