@@ -15,6 +15,6 @@ public class VoucherEvent {
   private String description;
   private LocalDateTime when;
   private long amount;
-  private long transationFee;
+  private long transactionFee;
 
 }
