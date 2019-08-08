@@ -18,9 +18,4 @@ public class VoucherController {
 
     }
 
-    @PostMapping
-    @ResponseStatus(value = HttpStatus.OK)
-    public void debitVoucher() {
-
-    }
 }
