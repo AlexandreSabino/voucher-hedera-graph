@@ -1,6 +1,7 @@
 package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
+import com.biscoito.voucher.gateways.CustomerGateway;
 import com.biscoito.voucher.gateways.HederaHelper;
 import com.hedera.hashgraph.sdk.Client;
 import com.hedera.hashgraph.sdk.HederaException;
@@ -16,9 +17,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CreateCustomer {
 
-    private final HederaHelper hederaHelper;
+    private final CustomerGateway customerGateway;
 
-    private final PasswordManager passwordManager;
+    private final HederaHelper hederaHelper;
 
     @Value("${hedera.MAX_FEE}")
     private Long maxFee;
@@ -29,11 +30,13 @@ public class CreateCustomer {
             final Client hederaClient = hederaHelper.createHederaClient();
             hederaClient.setMaxTransactionFee(maxFee);
             final AccountId account = hederaClient.createAccount(newKey.getPublicKey(), 0);
-            return Customer.builder()
+            final Customer customer = Customer.builder()
                     .accountId(account.toString())
                     .customerIdentifier(customerIdentifier)
                     .shaPassword(pass)
                     .build();
+
+            return customerGateway.save(customer);
         } catch (HederaException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
