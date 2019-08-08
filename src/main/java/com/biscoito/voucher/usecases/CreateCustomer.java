@@ -34,6 +34,7 @@ public class CreateCustomer {
                     .accountId(account.toString())
                     .customerIdentifier(customerIdentifier)
                     .shaPassword(pass)
+                    .privateKey(newKey.toString())
                     .build();
 
             return customerGateway.save(customer);

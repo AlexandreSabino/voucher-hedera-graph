@@ -45,6 +45,6 @@ public class SpringFoxConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("Vitrine - FF-PROMOTION-SHIPPING").version("1.0").build();
+        return new ApiInfoBuilder().title("Voucher").version("1.0").build();
     }
 }

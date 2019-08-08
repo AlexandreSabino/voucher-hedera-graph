@@ -21,4 +21,7 @@ public class Customer {
 
     @NotBlank
     private String shaPassword;
+
+    @NotBlank
+    private String privateKey;
 }
