@@ -1,6 +1,12 @@
 server:
   port: 8080
 
+hedera:
+  NODE_ADDRESS: 0.testnet.hedera.com:50211
+  NODE_ID: 0.0.3
+  OPERATOR_KEY: 302e020100300506032b6570042204206ac7976ca8a795331f432caa765a8953487309929e1f61df9412dfafd26251ce
+  OPERATOR_ID: 0.0.38704
+
 logging:
   level:
     org.springframework.web: INFO
