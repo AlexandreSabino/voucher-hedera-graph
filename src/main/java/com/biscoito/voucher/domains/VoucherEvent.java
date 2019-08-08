@@ -11,6 +11,7 @@ import lombok.ToString;
 public class VoucherEvent {
 
   private String id;
+  private String customerIdentifier;
   private byte[] transactionHash;
   private String description;
   private LocalDateTime when;
