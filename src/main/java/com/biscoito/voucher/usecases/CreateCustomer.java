@@ -2,6 +2,7 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.gateways.HederaHelper;
+import com.hedera.hashgraph.sdk.Client;
 import com.hedera.hashgraph.sdk.HederaException;
 import com.hedera.hashgraph.sdk.account.AccountId;
 import com.hedera.hashgraph.sdk.crypto.ed25519.Ed25519PrivateKey;
@@ -21,11 +22,13 @@ public class CreateCustomer {
     public Customer execute(final String customerIdentifier, final String pass) {
         try {
             var newKey = Ed25519PrivateKey.generate();
-            final AccountId account = hederaHelper.createHederaClient().createAccount(newKey.getPublicKey(), 0);
+            final Client hederaClient = hederaHelper.createHederaClient();
+            hederaClient.setMaxTransactionFee(100_000_000);
+            final AccountId account = hederaClient.createAccount(newKey.getPublicKey(), 0);
             return Customer.builder()
                     .accountId(account.toString())
                     .customerIdentifier(customerIdentifier)
-                    .shaPassword(passwordManager.encrypt(pass))
+                    .shaPassword(pass)
                     .build();
         } catch (HederaException e) {
             log.error(e.getMessage(), e);
