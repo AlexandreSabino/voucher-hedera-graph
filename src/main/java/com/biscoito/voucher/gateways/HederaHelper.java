@@ -3,6 +3,7 @@ package com.biscoito.voucher.gateways;
 import com.hedera.hashgraph.sdk.Client;
 import com.hedera.hashgraph.sdk.account.AccountId;
 import com.hedera.hashgraph.sdk.crypto.ed25519.Ed25519PrivateKey;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ public class HederaHelper {
     @Value("${hedera.NODE_ID}")
     private String nodeId;
 
+    @Getter
     @Value("${hedera.OPERATOR_ID}")
     private String operatorId;
 
@@ -27,7 +29,7 @@ public class HederaHelper {
         return AccountId.fromString(nodeId);
     }
 
-    public AccountId getOperatorId() {
+    public AccountId getNSAccountId() {
         return AccountId.fromString(operatorId);
     }
 
@@ -41,7 +43,7 @@ public class HederaHelper {
 
         // Defaults the operator account ID and key such that all generated transactions will be paid for
         // by this account and be signed by this key
-        client.setOperator(getOperatorId(), getOperatorKey());
+        client.setOperator(getNSAccountId(), getOperatorKey());
 
         return client;
     }
