@@ -36,7 +36,8 @@ public class TransferToCustomer {
     log.debug("Netshoes balance before: {}", nsBalanceBefore);
     log.debug("Customer balance before: {}", customerBalanceBefore);
 
-    var record = voucherGateway.credit(customer.getAccountId(), amount);
+    var record = voucherGateway.transfer(hederaHelper.getOperatorId(),
+        hederaHelper.getOperatorKey(), customer.getAccountId(), amount);
 
     var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getOperatorId());
     var customerBalanceAfter = voucherGateway.getBalance(customer.getAccountId());

@@ -27,7 +27,7 @@ public class CreateCustomer {
     public Customer execute(final String customerIdentifier, final String pass) {
         try {
             var newKey = Ed25519PrivateKey.generate();
-            final Client hederaClient = hederaHelper.createHederaClient();
+            final Client hederaClient = hederaHelper.buildClient(hederaHelper.getOperatorId(), hederaHelper.getOperatorKey());
             hederaClient.setMaxTransactionFee(maxFee);
             final AccountId account = hederaClient.createAccount(newKey.getPublicKey(), 0);
             final Customer customer = Customer.builder()

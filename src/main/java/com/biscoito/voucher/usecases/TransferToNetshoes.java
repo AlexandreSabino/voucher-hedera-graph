@@ -39,7 +39,8 @@ public class TransferToNetshoes {
             throw new InsuficientFundsException("no money...");
         }
 
-        var record = voucherGateway.debit(customer.getAccountId(), amount);
+        var record = voucherGateway.transfer(customer.getAccountId(), customer.getPrivateKey(),
+            hederaHelper.getOperatorId(), amount);
 
         var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getOperatorId());
         var customerBalanceAfter = voucherGateway.getBalance(customer.getAccountId());

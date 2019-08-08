@@ -3,14 +3,15 @@ package com.biscoito.voucher.gateways;
 import com.hedera.hashgraph.sdk.Client;
 import com.hedera.hashgraph.sdk.account.AccountId;
 import com.hedera.hashgraph.sdk.crypto.ed25519.Ed25519PrivateKey;
+import java.util.Map;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 @Component
 public class HederaHelper {
+
+    //100_000_000 (100 milhoes) tinybar => 1 hbar => 12 cents dolar
 
     @Value("${hedera.NODE_ADDRESS}")
     private String nodeAddress;
@@ -22,8 +23,13 @@ public class HederaHelper {
     @Value("${hedera.OPERATOR_ID}")
     private String operatorId;
 
+    @Getter
     @Value("${hedera.OPERATOR_KEY}")
     private String operatorKey;
+
+    @Getter
+    @Value("${hedera.MAX_FEE}")
+    private Long maxFee;
 
     public AccountId getNodeId() {
         return AccountId.fromString(nodeId);
@@ -33,18 +39,11 @@ public class HederaHelper {
         return AccountId.fromString(operatorId);
     }
 
-    public Ed25519PrivateKey getOperatorKey() {
-        return Ed25519PrivateKey.fromString(operatorKey);
-    }
-
-    public Client createHederaClient() {
-        // To connect to a network with more nodes, add additional entries to the network map
+    public Client buildClient(final String accountId, final String key) {
         var client = new Client(Map.of(getNodeId(), nodeAddress));
-
-        // Defaults the operator account ID and key such that all generated transactions will be paid for
-        // by this account and be signed by this key
-        client.setOperator(getNSAccountId(), getOperatorKey());
+        client.setOperator(AccountId.fromString(accountId), Ed25519PrivateKey.fromString(key));
 
         return client;
     }
+
 }

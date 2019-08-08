@@ -6,8 +6,5 @@ public interface VoucherGateway {
 
   long getBalance(String accountId);
 
-  TransactionRecord debit(String from, long amount);
-
-  TransactionRecord credit(String to, long amount);
-
+  TransactionRecord transfer(String accountFrom, String keyFrom, String accountTo, long amount);
 }
