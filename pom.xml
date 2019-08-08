@@ -16,12 +16,14 @@
 
 	<properties>
 		<java.version>1.10</java.version>
-        <maven.compiler.source>10</maven.compiler.source>
-        <maven.compiler.target>10</maven.compiler.target>
-        <sdk.version>0.5.2</sdk.version>
+		<maven.compiler.source>10</maven.compiler.source>
+		<maven.compiler.target>10</maven.compiler.target>
+		<sdk.version>0.5.2</sdk.version>
 		<docker.image.prefix>voucher-hedera-graph</docker.image.prefix>
-        <springfox.swagger.version>2.9.2</springfox.swagger.version>
-    </properties>
+		<springfox.swagger.version>2.9.2</springfox.swagger.version>
+		<spock.spring.version>1.1-groovy-2.4</spock.spring.version>
+		<spock.reports.version>1.2.9</spock.reports.version>
+	</properties>
 
 	<dependencies>
         <dependency>
@@ -38,19 +40,19 @@
             <artifactId>sdk</artifactId>
             <version>${sdk.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-actuator</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</dependency>
         <!-- Springfox Swagger -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.swagger.version}</version>
+					<groupId>io.springfox</groupId>
+					<artifactId>springfox-swagger2</artifactId>
+					<version>${springfox.swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
@@ -58,11 +60,32 @@
             <version>${springfox.swagger.version}</version>
         </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-test</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.spockframework</groupId>
+					<artifactId>spock-spring</artifactId>
+					<version>${spock.spring.version}</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>com.athaydes</groupId>
+					<artifactId>spock-reports</artifactId>
+					<version>${spock.reports.version}</version>
+					<scope>test</scope>
+					<!-- this avoids affecting your version of Groovy/Spock -->
+					<exclusions>
+						<exclusion>
+							<groupId>*</groupId>
+							<artifactId>*</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
 	</dependencies>
 
 	<build>
