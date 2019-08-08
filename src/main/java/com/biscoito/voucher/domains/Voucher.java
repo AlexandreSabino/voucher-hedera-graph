@@ -13,7 +13,5 @@ public class Voucher {
 
     private String customerIdentifier;
 
-    private Long amount;
-
     private Collection<String> events;
 }
