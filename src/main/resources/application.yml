@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.adidas.itinerarymanager: DEBUG
+
+spring:
+  application:
+    name: "VoucherGraph"
+  data:
+    mongodb:
+      hostname: mongodb
+      port: 27017
+      db: dbVoucher
+      timeout: 5000
+      uri: "mongodb://${spring.data.mongodb.hostname}:${spring.data.mongodb.port}/${spring.data.mongodb.db}?serverSelectionTimeoutMS=${spring.data.mongodb.timeout}&connectTimeoutMS=${spring.data.mongodb.timeout}"
+
