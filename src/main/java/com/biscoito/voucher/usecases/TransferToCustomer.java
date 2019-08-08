@@ -2,6 +2,7 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.domains.VoucherEvent;
+import com.biscoito.voucher.domains.VoucherEvent.VoucherType;
 import com.biscoito.voucher.exceptions.InsuficientFundsException;
 import com.biscoito.voucher.gateways.HederaHelper;
 import com.biscoito.voucher.gateways.VoucherEventGateway;
@@ -23,7 +24,7 @@ public class TransferToCustomer {
   private final VoucherEventGateway voucherEventGateway;
 
   public VoucherEvent execute(final String customerIdentifier, final String hashPassword, final long amount) {
-    log.info("Transfer amount {} to {}", amount, customerIdentifier);
+    log.info("Transfer amount {} from NS to customer {}", amount, customerIdentifier);
     final Customer customer = findOrCreateCustomerAccount.execute(customerIdentifier, hashPassword);
 
     var nsClientAccountId = hederaHelper.getOperatorId();
@@ -38,24 +39,19 @@ public class TransferToCustomer {
         throw new InsuficientFundsException("no money...");
       }
 
-      log.debug("Ns balance before: {}", nsBalanceBefore);
+      log.debug("NS balance before: {}", nsBalanceBefore);
       log.debug("Customer balance before: {}", customerBalanceBefore);
 
-      //TODO retry
-
       var record = new CryptoTransferTransaction(client)
-          // .addSender and .addRecipient can be called as many times as you want as long as the total sum from
-          // both sides is equivalent
           .addSender(nsClientAccountId, amount)
           .addRecipient(clientAccountId, amount)
-          .setMemo("voucher credit")
-          // As we are sending from the operator we do not need to explicitly sign the transaction
+          .setMemo(String.format("voucher credit of %s", amount))
           .executeForRecord();
 
       var nsBalanceAfter = client.getAccountBalance(nsClientAccountId);
       var customerBalanceAfter = client.getAccountBalance(clientAccountId);
 
-      log.debug("Ns balance before: {}", nsBalanceAfter);
+      log.debug("NS balance before: {}", nsBalanceAfter);
       log.debug("Customer balance before: {}", customerBalanceAfter);
 
       final VoucherEvent event = VoucherEvent.builder()
@@ -64,6 +60,7 @@ public class TransferToCustomer {
           .transactionFee(record.getTransactionFee())
           .description(record.getMemo())
           .when(LocalDateTime.now())
+          .type(VoucherType.CREDIT)
           .build();
 
       return voucherEventGateway.save(event);
