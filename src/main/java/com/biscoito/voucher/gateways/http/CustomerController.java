@@ -1,20 +1,19 @@
 package com.biscoito.voucher.gateways.http;
 
 import com.biscoito.voucher.domains.Customer;
+import com.biscoito.voucher.gateways.http.json.CustomerBalanceJson;
 import com.biscoito.voucher.gateways.http.json.CustomerInput;
 import com.biscoito.voucher.gateways.http.json.CustomerOutput;
 import com.biscoito.voucher.usecases.CreateCustomer;
 import com.biscoito.voucher.usecases.FindCustomer;
+import com.biscoito.voucher.usecases.GetBalance;
 import com.biscoito.voucher.usecases.exceptions.InvalidPasswordException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -28,6 +27,8 @@ public class CustomerController {
     private final CreateCustomer createCustomer;
 
     private final FindCustomer findCustomer;
+
+    private final GetBalance getBalance;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public CustomerOutput create(@RequestBody @Valid final CustomerInput customerJson) {
@@ -50,6 +51,14 @@ public class CustomerController {
         } catch (InvalidPasswordException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
 
+    @PostMapping(path = "/me/balance")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public CustomerBalanceJson getBalance(@RequestBody final CustomerInput customerInput) {
+        final long balance =
+                getBalance.execute(customerInput.getCustomerIdentifier(), customerInput.getShaPassword());
+
+        return new CustomerBalanceJson(balance, customerInput.getCustomerIdentifier());
     }
 }
