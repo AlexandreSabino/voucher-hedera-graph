@@ -64,7 +64,7 @@ public class TransferToCustomer {
 
       return VoucherEvent.builder()
           .transactionHash(record.getTransactionHash())
-          .transationFee(record.getTransactionFee())
+          .transactionFee(record.getTransactionFee())
           .description(record.getMemo())
           .when(LocalDateTime.now())
           .build();
