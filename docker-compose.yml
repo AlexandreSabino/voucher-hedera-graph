@@ -7,7 +7,7 @@ services:
       - 27017:27017
     command: --smallfiles
   hedera-graph:
-    image: biscoito-voucher-hedera-graph/voucher-hedera-graph
+    image: voucher-hedera-graph/voucher-hedera-graph
     ports:
       - 8080:8080
     depends_on:

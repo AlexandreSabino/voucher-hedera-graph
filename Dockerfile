@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-alpine
+FROM openjdk:11-jre-slim
 EXPOSE 8080
 VOLUME /tmp
 ARG DEPENDENCY=target/dependency
