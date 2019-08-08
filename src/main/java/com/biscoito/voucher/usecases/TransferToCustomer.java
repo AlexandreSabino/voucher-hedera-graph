@@ -52,6 +52,7 @@ public class TransferToCustomer {
         .description(record.getMemo())
         .when(LocalDateTime.now())
         .type(VoucherType.CREDIT)
+        .amount(amount)
         .build();
 
     return voucherEventGateway.save(event);

@@ -54,6 +54,7 @@ public class TransferToNetshoes {
             .transactionFee(record.getTransactionFee())
             .description(record.getMemo())
             .when(LocalDateTime.now())
+            .amount(amount)
             .type(VoucherType.DEBIT)
             .build();
 
