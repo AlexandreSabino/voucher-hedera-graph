@@ -35,6 +35,7 @@ public class EventsController {
           .description(voucherEvent.getDescription())
           .when(voucherEvent.getWhen())
           .amount(voucherEvent.getAmountInCents())
+          .type(voucherEvent.getType())
           .build())
         .collect(Collectors.toList());
   }
@@ -52,6 +53,7 @@ public class EventsController {
             .description(voucherEvent.getDescription())
             .when(voucherEvent.getWhen())
             .amount(voucherEvent.getAmountInCents())
+            .type(voucherEvent.getType())
             .build())
         .collect(Collectors.toList());
   }
