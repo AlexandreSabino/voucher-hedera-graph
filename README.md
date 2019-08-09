@@ -14,3 +14,15 @@
 
 ## Usage
 
+```sh
+mvn install dockerfile:build
+
+docker-compose up
+```
+
+## Swagger Documentation
+
+http://34.98.91.194/swagger-ui.html
+
+## Postman Collection
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/57607c9a63add0e777ce)
