@@ -2,7 +2,7 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.domains.VoucherEvent;
-import com.biscoito.voucher.domains.VoucherEvent.VoucherType;
+import com.biscoito.voucher.domains.VoucherEvent.EventType;
 import com.biscoito.voucher.exceptions.InsuficientFundsException;
 import com.biscoito.voucher.gateways.HederaHelper;
 import com.biscoito.voucher.gateways.VoucherEventGateway;
@@ -32,35 +32,37 @@ public class TransferToCustomer {
         log.info("Transfer amount {} from NS to customer {}", amountInCents, customerIdentifier);
         final Customer customer = findOrCreateCustomerAccount.execute(customerIdentifier, hashPassword);
 
-        var nsBalanceBefore = voucherGateway.getBalance(hederaHelper.getOperatorId());
+        var nsBalanceBefore = voucherGateway.getBalance(hederaHelper.getNetshoesAccountId());
         var customerBalanceBefore = voucherGateway.getBalance(customer.getAccountId());
 
-        if (tinybarsCalculator.toRealInCents(nsBalanceBefore) <= 0L) {
-            throw new InsuficientFundsException("no money...");
+        if (tinybarsCalculator.toRealInCents(nsBalanceBefore) <= 0L
+            || tinybarsCalculator.toRealInCents(nsBalanceBefore) < amountInCents) {
+            throw new InsuficientFundsException("No funds from Netshoes");
         }
 
         log.debug("Netshoes balance before: {}", nsBalanceBefore);
         log.debug("Customer balance before: {}", customerBalanceBefore);
 
         final long tinybars = tinybarsCalculator.toTinybars(amountInCents + costTransaction);
-        var record = voucherGateway.transfer(hederaHelper.getOperatorId(),
-                hederaHelper.getOperatorKey(), customer.getAccountId(), tinybars);
+        var record = voucherGateway.transfer(hederaHelper.getNetshoesAccountId(),
+                hederaHelper.getNetshoesKey(), customer.getAccountId(), tinybars);
 
-        var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getOperatorId());
+        var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getNetshoesAccountId());
         var customerBalanceAfter = voucherGateway.getBalance(customer.getAccountId());
 
         log.debug("Netshoes balance after: {}", nsBalanceAfter);
         log.debug("Customer balance after: {}", customerBalanceAfter);
 
         final VoucherEvent event = VoucherEvent.builder()
-                .customerIdentifier(customerIdentifier)
-                .transactionHash(record.getTransactionHash())
-                .transactionFee(record.getTransactionFee())
-                .description(record.getMemo())
-                .when(LocalDateTime.now())
-                .type(VoucherType.CREDIT)
-                .amount(tinybarsCalculator.toRealInCents(tinybars))
-                .build();
+            .customerIdentifier(customerIdentifier)
+            .transactionHash(record.getTransactionHash())
+            .transactionFee(record.getTransactionFee())
+            .description(record.getMemo())
+            .when(LocalDateTime.now())
+            .type(EventType.CREDIT)
+            .amountInCents(tinybarsCalculator.toRealInCents(tinybars))//+ fee
+            .amountInCentsTinybar(tinybars)
+            .build();
 
         return voucherEventGateway.save(event);
     }

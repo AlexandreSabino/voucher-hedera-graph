@@ -14,35 +14,39 @@ class TransferToCustomerSpec extends Specification {
     def hederaHelper = Mock(HederaHelper)
     def findOrCreateCustomer = Mock(FindOrCreateCustomerAccount)
     def voucherGateway = Mock(VoucherGateway)
+    def calc = new TinybarsCalculator()
     def transferToCustomer = new TransferToCustomer(
             hederaHelper,
             findOrCreateCustomer,
             new VoucherEventGatewayInMemory(),
-            voucherGateway)
+            voucherGateway,
+            calc)
 
     def setup() {
-        hederaHelper.getOperatorId() >> "NS123"
-    }
-
-    def "Transfer 10 from Netshoes to new client Joseph"() {
-        given: "a new customer"
-        def customerIdentifier = "joseph@gmail.com"
-        and: "amount of 10"
-        def amount = 10l
-        when: "transfer 10 to joseph"
-        def event = transferToCustomer.execute(customerIdentifier, "xyz", amount)
-        then: "event credit was created"
-        event.type == VoucherEvent.VoucherType.CREDIT
-        event.amount == 10l
-        event.customerIdentifier == customerIdentifier
-        event.description == "test credit"
-
+        hederaHelper.getNetshoesAccountId() >> "NS123"
         findOrCreateCustomer.execute(_, _) >> new Customer([
                 accountId: "555",
                 shaPassword: "xyz",
                 customerIdentifier: "joseph@gmail.com"
         ])
-        voucherGateway.getBalance("NS123") >> 100000
+        transferToCustomer.costTransaction = 100
+    }
+
+    def "Transfer 100,00 reais from Netshoes to new client Joseph"() {
+        given: "a new customer"
+        def customerIdentifier = "joseph@gmail.com"
+        and: "amount of 100,00 reais"
+        def amount = 10000l
+        when: "transfer 100,00 reais to joseph"
+        def event = transferToCustomer.execute(customerIdentifier, "xyz", amount)
+        then: "event credit was created"
+        event.type == VoucherEvent.EventType.CREDIT
+        event.amountInCents == 10100l
+        event.amountInCentsTinybar == 21041666666l
+        event.customerIdentifier == customerIdentifier
+        event.description == "test credit"
+
+        voucherGateway.getBalance("NS123") >> calc.toTinybars(10000000)
         voucherGateway.getBalance("555") >> 0
         voucherGateway.transfer(_, _, _, _) >>
           new TransactionRecord(com.hedera.hashgraph.sdk.proto.TransactionRecord.newBuilder()
@@ -51,22 +55,30 @@ class TransferToCustomerSpec extends Specification {
                   .build())
     }
 
-    def "Transfer 10 from Netshoes to new client Joseph when no balance"() {
+    def "Transfer 100,00 reais from Netshoes to new client Joseph when no funds"() {
         given: "a new customer"
         def customerIdentifier = "joseph@gmail.com"
-        and: "amount of 10"
-        def amount = 10l
-        when: "transfer 10 to joseph"
+        and: "amount of 100,00 reais"
+        def amount = 10000l
+        when: "transfer 100,00 reais to joseph"
         transferToCustomer.execute(customerIdentifier, "xyz", amount)
-        then: "an error occurs because no balance"
+        then: "an error occurs because no funds"
         thrown InsuficientFundsException
 
-        findOrCreateCustomer.execute(_, _) >> new Customer([
-                accountId: "555",
-                shaPassword: "xyz",
-                customerIdentifier: "joseph@gmail.com"
-        ])
         voucherGateway.getBalance("NS123") >> 0
+    }
+
+    def "Transfer 100,00 reais from Netshoes to new client Joseph when insuficient funds"() {
+        given: "a new customer"
+        def customerIdentifier = "joseph@gmail.com"
+        and: "amount of 100,00 reais"
+        def amount = 10000l
+        when: "transfer 100,00 reais to joseph"
+        transferToCustomer.execute(customerIdentifier, "xyz", amount)
+        then: "an error occurs because no funds"
+        thrown InsuficientFundsException
+
+        voucherGateway.getBalance("NS123") >> calc.toTinybars(5000)
     }
 
 }

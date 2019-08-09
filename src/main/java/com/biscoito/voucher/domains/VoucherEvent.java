@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class VoucherEvent {
 
-  public enum VoucherType {
+  public enum EventType {
     CREDIT,
     DEBIT
   }
@@ -20,8 +20,9 @@ public class VoucherEvent {
   private byte[] transactionHash;
   private String description;
   private LocalDateTime when;
-  private long amount;
+  private long amountInCents;
+  private long amountInCentsTinybar;
   private long transactionFee;
-  private VoucherType type;
+  private EventType type;
 
 }

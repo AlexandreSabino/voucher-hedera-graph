@@ -34,7 +34,7 @@ public class VoucherController {
                 .customerIdentifier(voucherEvent.getCustomerIdentifier())
                 .description(voucherEvent.getDescription())
                 .when(voucherEvent.getWhen())
-                .amount(voucherEvent.getAmount())
+                .amount(voucherEvent.getAmountInCents())
                 .build();
     }
 
@@ -51,7 +51,7 @@ public class VoucherController {
                 .customerIdentifier(voucherEvent.getCustomerIdentifier())
                 .description(voucherEvent.getDescription())
                 .when(voucherEvent.getWhen())
-                .amount(voucherEvent.getAmount())
+                .amount(voucherEvent.getAmountInCents())
                 .build();
     }
 }

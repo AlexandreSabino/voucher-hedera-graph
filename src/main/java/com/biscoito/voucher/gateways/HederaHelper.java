@@ -21,11 +21,11 @@ public class HederaHelper {
 
     @Getter
     @Value("${hedera.OPERATOR_ID}")
-    private String operatorId;
+    private String netshoesAccountId;
 
     @Getter
     @Value("${hedera.OPERATOR_KEY}")
-    private String operatorKey;
+    private String netshoesKey;
 
     @Getter
     @Value("${hedera.MAX_FEE}")
@@ -33,10 +33,6 @@ public class HederaHelper {
 
     public AccountId getNodeId() {
         return AccountId.fromString(nodeId);
-    }
-
-    public AccountId getNSAccountId() {
-        return AccountId.fromString(operatorId);
     }
 
     public Client buildClient(final String accountId, final String key) {
