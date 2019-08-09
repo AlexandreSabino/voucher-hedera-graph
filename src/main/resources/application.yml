@@ -23,5 +23,7 @@ spring:
       port: 27017
       db: dbVoucher
       timeout: 5000
-      uri: "mongodb://${spring.data.mongodb.hostname}:${spring.data.mongodb.port}/${spring.data.mongodb.db}?serverSelectionTimeoutMS=${spring.data.mongodb.timeout}&connectTimeoutMS=${spring.data.mongodb.timeout}"
+      user: admin
+      password: admin
+      uri: "mongodb://${spring.data.mongodb.user}:${spring.data.mongodb.password}@${spring.data.mongodb.hostname}:${spring.data.mongodb.port}/${spring.data.mongodb.db}?serverSelectionTimeoutMS=${spring.data.mongodb.timeout}&connectTimeoutMS=${spring.data.mongodb.timeout}"
 
