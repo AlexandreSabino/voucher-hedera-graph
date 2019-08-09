@@ -23,6 +23,8 @@
 		<springfox.swagger.version>2.9.2</springfox.swagger.version>
 		<spock.spring.version>1.1-groovy-2.4</spock.spring.version>
 		<spock.reports.version>1.2.9</spock.reports.version>
+        <fabric8.maven.plugin.version>3.5.38</fabric8.maven.plugin.version>
+        <git-commit-plugin.version>2.2.4</git-commit-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -140,6 +142,46 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>${git-commit-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <version>${fabric8.maven.plugin.version}</version>
+                <configuration>
+                    <profile>hedera</profile>
+                    <verbose>true</verbose>
+                    <skipExtendedAuth>true</skipExtendedAuth>
+                    <images>
+                        <image>
+                            <name>${project.artifactId}:%t</name>
+                            <build>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${git.commit.id.describe}</tag>
+                                </tags>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <assembly>
+                                    <targetDir>/opt/app</targetDir>
+                                    <descriptor>assembly.xml</descriptor>
+                                </assembly>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
