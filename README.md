@@ -14,3 +14,8 @@
 
 ## Usage
 
+`ssh
+mvn install dockerfile:build
+
+docker-compose up
+`
