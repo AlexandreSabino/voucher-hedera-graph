@@ -24,9 +24,10 @@ public class TransferToNetshoes {
     private final FindOrCreateCustomerAccount findOrCreateCustomerAccount;
     private final VoucherEventGateway voucherEventGateway;
     private final VoucherGateway voucherGateway;
+    private final TinybarsCalculator tinybarsCalculator;
 
-    public VoucherEvent execute(final String customerIdentifier, final String hashPassword, final long amount) {
-        log.info("Transfer amount {} from customer {} to NS", amount, customerIdentifier);
+    public VoucherEvent execute(final String customerIdentifier, final String hashPassword, final long amountInCents) {
+        log.info("Transfer amount {} from customer {} to NS", amountInCents, customerIdentifier);
         final Customer customer = findOrCreateCustomerAccount.execute(customerIdentifier, hashPassword);
 
         var nsBalanceBefore = voucherGateway.getBalance(hederaHelper.getOperatorId());
@@ -35,18 +36,19 @@ public class TransferToNetshoes {
         log.debug("Netshoes balance before: {}", nsBalanceBefore);
         log.debug("Customer balance before: {}", customerBalanceBefore);
 
-        if (customerBalanceBefore <= 0l) {
+        if (tinybarsCalculator.toRealInCents(customerBalanceBefore) <= 0L) {
             throw new InsuficientFundsException("no money...");
         }
 
+        final long tinybars = tinybarsCalculator.toTinybars(amountInCents);
         var record = voucherGateway.transfer(customer.getAccountId(), customer.getPrivateKey(),
-            hederaHelper.getOperatorId(), amount);
+            hederaHelper.getOperatorId(), tinybars);
 
         var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getOperatorId());
         var customerBalanceAfter = voucherGateway.getBalance(customer.getAccountId());
 
-        log.debug("Netshoes balance before: {}", nsBalanceAfter);
-        log.debug("Customer balance before: {}", customerBalanceAfter);
+        log.debug("Netshoes balance after: {}", nsBalanceAfter);
+        log.debug("Customer balance after: {}", customerBalanceAfter);
 
         final VoucherEvent event = VoucherEvent.builder()
             .customerIdentifier(customerIdentifier)
@@ -54,7 +56,7 @@ public class TransferToNetshoes {
             .transactionFee(record.getTransactionFee())
             .description(record.getMemo())
             .when(LocalDateTime.now())
-            .amount(amount)
+            .amount(tinybarsCalculator.toRealInCents(tinybars))
             .type(VoucherType.DEBIT)
             .build();
 

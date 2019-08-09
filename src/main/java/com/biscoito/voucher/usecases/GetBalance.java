@@ -15,10 +15,12 @@ public class GetBalance {
 
     private final FindCustomer findCustomer;
 
+    private final TinybarsCalculator tinybarsCalculator;
+
     public long execute(final String customerIdentifier, final String hashPass) {
         final Customer customer = findCustomer.execute(customerIdentifier, hashPass)
                     .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        return voucherGateway.getBalance(customer.getAccountId());
+        return tinybarsCalculator.toRealInCents(voucherGateway.getBalance(customer.getAccountId()));
     }
 }

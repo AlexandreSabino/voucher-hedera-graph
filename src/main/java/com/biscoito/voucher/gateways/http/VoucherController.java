@@ -38,9 +38,9 @@ public class VoucherController {
                 .build();
     }
 
-    @PostMapping(path = "/exchange")
+    @PostMapping(path = "/use")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public VoucherEventOutput exchangeVoucher(@RequestBody final VoucherInput voucherInput) {
+    public VoucherEventOutput useVoucher(@RequestBody final VoucherInput voucherInput) {
         final VoucherEvent voucherEvent = transferToNetshoes.execute(
                 voucherInput.getCustomerIdentifier(),
                 voucherInput.getHashPassword(),
