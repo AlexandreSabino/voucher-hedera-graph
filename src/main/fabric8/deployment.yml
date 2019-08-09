@@ -1,0 +1,38 @@
+metadata:
+  labels:
+    app: ${spring.application.name}
+    commit: ${git.commit.id.describe}
+  name: ${spring.application.name}
+spec:
+  replicas: ${deployment.replicas}
+  selector:
+    matchLabels:
+      app: ${spring.application.name}
+  template:
+    metadata:
+      labels:
+        app: ${spring.application.name}
+        commit: ${git.commit.id.describe}
+      annotations:
+        timestamp: ${timestamp}
+    spec:
+      serviceAccountName: ${spring.application.name}
+      containers:
+        - name: ${spring.application.name}
+          image: "gcr.io/hederavoucher/voucher-hedera-graph:latest"
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: JAVA_OPTIONS
+              value: "-Xms128m -Xmx384m -Xss384k"
+            - name: SPRING_PROFILES_ACTIVE
+              value: ${spring.profiles.active}
+          resources:
+            limits:
+              memory: 420Mi
+            requests:
+              cpu: 100m
+              memory: 400Mi

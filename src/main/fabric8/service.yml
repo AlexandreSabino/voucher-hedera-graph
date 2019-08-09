@@ -1,0 +1,16 @@
+spec:
+  serviceAccountName: ${spring.application.name}
+  selector:
+    app: ${spring.application.name}
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  labels:
+    app: ${spring.application.name}
+    commit: ${git.commit.id.describe}
+  name: ${spring.application.name}
