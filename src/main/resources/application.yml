@@ -4,8 +4,8 @@ server:
 hedera:
   NODE_ADDRESS: 0.testnet.hedera.com:50211
   NODE_ID: 0.0.3
-  OPERATOR_KEY: 302e020100300506032b6570042204206ac7976ca8a795331f432caa765a8953487309929e1f61df9412dfafd26251ce
-  OPERATOR_ID: 0.0.38704
+  OPERATOR_KEY: 302e020100300506032b65700422042093c97171f9939cfed06ca65fcc22af7b4780e48fa86f8d5a1c7ca39624f8296d
+  OPERATOR_ID: 0.0.38823
   MAX_FEE: 100_000_000
   COST_TRANSACTION: 100
 
@@ -19,9 +19,11 @@ spring:
     name: "voucher"
   data:
     mongodb:
-      hostname: mongodb
+      hostname: default.mongodb.svc.cluster.local
       port: 27017
       db: dbVoucher
       timeout: 5000
-      uri: "mongodb://${spring.data.mongodb.hostname}:${spring.data.mongodb.port}/${spring.data.mongodb.db}?serverSelectionTimeoutMS=${spring.data.mongodb.timeout}&connectTimeoutMS=${spring.data.mongodb.timeout}"
+      user: admin
+      password: admin
+      uri: "mongodb://${spring.data.mongodb.user}:${spring.data.mongodb.password}@${spring.data.mongodb.hostname}:${spring.data.mongodb.port}/${spring.data.mongodb.db}?serverSelectionTimeoutMS=${spring.data.mongodb.timeout}&connectTimeoutMS=${spring.data.mongodb.timeout}"
 
