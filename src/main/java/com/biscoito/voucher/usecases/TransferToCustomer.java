@@ -32,7 +32,7 @@ public class TransferToCustomer {
         log.info("Transfer amount {} from NS to customer {}", amountInCents, customerIdentifier);
         final Customer customer = findOrCreateCustomerAccount.execute(customerIdentifier, hashPassword);
 
-        var nsBalanceBefore = voucherGateway.getBalance(hederaHelper.getOperatorId());
+        var nsBalanceBefore = voucherGateway.getBalance(hederaHelper.getNetshoesAccountId());
         var customerBalanceBefore = voucherGateway.getBalance(customer.getAccountId());
 
         if (tinybarsCalculator.toRealInCents(nsBalanceBefore) <= 0L
@@ -44,10 +44,10 @@ public class TransferToCustomer {
         log.debug("Customer balance before: {}", customerBalanceBefore);
 
         final long tinybars = tinybarsCalculator.toTinybars(amountInCents + costTransaction);
-        var record = voucherGateway.transfer(hederaHelper.getOperatorId(),
-                hederaHelper.getOperatorKey(), customer.getAccountId(), tinybars);
+        var record = voucherGateway.transfer(hederaHelper.getNetshoesAccountId(),
+                hederaHelper.getNetshoesKey(), customer.getAccountId(), tinybars);
 
-        var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getOperatorId());
+        var nsBalanceAfter = voucherGateway.getBalance(hederaHelper.getNetshoesAccountId());
         var customerBalanceAfter = voucherGateway.getBalance(customer.getAccountId());
 
         log.debug("Netshoes balance after: {}", nsBalanceAfter);

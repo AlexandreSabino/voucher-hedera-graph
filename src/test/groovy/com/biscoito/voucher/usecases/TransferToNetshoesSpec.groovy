@@ -23,7 +23,7 @@ class TransferToNetshoesSpec extends Specification {
             calc)
 
     def setup() {
-        hederaHelper.getOperatorId() >> "NS123"
+        hederaHelper.getNetshoesAccountId() >> "NS123"
         findOrCreateCustomer.execute(_, _) >> new Customer([
                 accountId: "555",
                 shaPassword: "xyz",

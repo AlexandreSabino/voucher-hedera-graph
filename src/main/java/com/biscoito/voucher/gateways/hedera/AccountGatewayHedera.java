@@ -19,7 +19,7 @@ public class AccountGatewayHedera implements AccountGateway {
 
   @Override
   public AccountId create(final Ed25519PrivateKey key) {
-    final Client client = hederaHelper.buildClient(hederaHelper.getOperatorId(), hederaHelper.getOperatorKey());
+    final Client client = hederaHelper.buildClient(hederaHelper.getNetshoesAccountId(), hederaHelper.getNetshoesKey());
     client.setMaxTransactionFee(hederaHelper.getMaxFee());
     try {
       return client.createAccount(key.getPublicKey(), 0);

@@ -21,7 +21,7 @@ public class VoucherGatewayHedera implements VoucherGateway {
   @Override
   public long getBalance(final String accountId) {
     try {
-      final Client client = hederaHelper.buildClient(hederaHelper.getOperatorId(), hederaHelper.getOperatorKey());
+      final Client client = hederaHelper.buildClient(hederaHelper.getNetshoesAccountId(), hederaHelper.getNetshoesKey());
       return client.getAccountBalance(AccountId.fromString(accountId));
     } catch (final HederaException ex) {
       log.error(ex.getMessage(), ex);

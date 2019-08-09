@@ -19,15 +19,13 @@ public class HederaHelper {
     @Value("${hedera.NODE_ID}")
     private String nodeId;
 
-    //TODO rename netshoesAccountId
     @Getter
     @Value("${hedera.OPERATOR_ID}")
-    private String operatorId;
+    private String netshoesAccountId;
 
-    //TODO rename netshoesKey
     @Getter
     @Value("${hedera.OPERATOR_KEY}")
-    private String operatorKey;
+    private String netshoesKey;
 
     @Getter
     @Value("${hedera.MAX_FEE}")
