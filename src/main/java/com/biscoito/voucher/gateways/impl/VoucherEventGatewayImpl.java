@@ -23,4 +23,10 @@ public class VoucherEventGatewayImpl implements VoucherEventGateway {
   public Collection<VoucherEvent> findAllByTypeSortable(final EventType type) {
     return repository.findAllByTypeOrderByWhenDesc(type);
   }
+
+
+  @Override
+  public Collection<VoucherEvent> findAllByCustomerSortable(final String customerIdentifier) {
+    return repository.findAllByCustomerIdentifierOrderByWhen(customerIdentifier);
+  }
 }

@@ -24,6 +24,12 @@ public class VoucherEventGatewayInMemory implements VoucherEventGateway {
     return events.stream().filter(event -> event.getType() == type).collect(Collectors.toList());
   }
 
+  @Override
+  public Collection<VoucherEvent> findAllByCustomerSortable(final String customerIdentifier) {
+    return events.stream().filter(event -> event.getCustomerIdentifier().equals(customerIdentifier))
+        .collect(Collectors.toList());
+  }
+
   public void clean() {
     this.events.clear();
   }

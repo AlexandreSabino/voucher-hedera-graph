@@ -39,4 +39,21 @@ public class EventsController {
         .collect(Collectors.toList());
   }
 
+  @GetMapping
+  @ResponseStatus(value = HttpStatus.OK)
+  public Collection<VoucherEventOutput> findByUser(
+      @RequestParam(name = "customerIdentifier") final String customerIdentifier) {
+    final Collection<VoucherEvent> events = gateway.findAllByCustomerSortable(customerIdentifier);
+
+    return events.stream()
+        .map(voucherEvent -> VoucherEventOutput.builder()
+            .id(voucherEvent.getId())
+            .customerIdentifier(voucherEvent.getCustomerIdentifier())
+            .description(voucherEvent.getDescription())
+            .when(voucherEvent.getWhen())
+            .amount(voucherEvent.getAmountInCents())
+            .build())
+        .collect(Collectors.toList());
+  }
+
 }

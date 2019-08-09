@@ -9,4 +9,6 @@ public interface VoucherEventRepository extends CrudRepository<VoucherEvent, Str
 
   Collection<VoucherEvent> findAllByTypeOrderByWhenDesc(EventType type);
 
+  Collection<VoucherEvent> findAllByCustomerIdentifierOrderByWhen(String customerIdentifier);
+
 }

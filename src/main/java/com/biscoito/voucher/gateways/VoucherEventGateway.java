@@ -10,4 +10,6 @@ public interface VoucherEventGateway {
 
   Collection<VoucherEvent> findAllByTypeSortable(EventType type);
 
+  Collection<VoucherEvent> findAllByCustomerSortable(String customerIdentifier);
+
 }
