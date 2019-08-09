@@ -6,6 +6,7 @@ import com.biscoito.voucher.gateways.VoucherEventGateway;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class VoucherEventGatewayInMemory implements VoucherEventGateway {
 
@@ -20,6 +21,10 @@ public class VoucherEventGatewayInMemory implements VoucherEventGateway {
 
   @Override
   public Collection<VoucherEvent> findAllByTypeSortable(final EventType type) {
-    return null;
+    return events.stream().filter(event -> event.getType() == type).collect(Collectors.toList());
+  }
+
+  public void clean() {
+    this.events.clear();
   }
 }

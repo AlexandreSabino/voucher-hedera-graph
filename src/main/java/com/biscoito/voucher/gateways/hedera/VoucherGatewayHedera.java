@@ -8,8 +8,10 @@ import com.hedera.hashgraph.sdk.TransactionRecord;
 import com.hedera.hashgraph.sdk.account.AccountId;
 import com.hedera.hashgraph.sdk.account.CryptoTransferTransaction;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class VoucherGatewayHedera implements VoucherGateway {
@@ -22,6 +24,7 @@ public class VoucherGatewayHedera implements VoucherGateway {
       final Client client = hederaHelper.buildClient(hederaHelper.getOperatorId(), hederaHelper.getOperatorKey());
       return client.getAccountBalance(AccountId.fromString(accountId));
     } catch (final HederaException ex) {
+      log.error(ex.getMessage(), ex);
       throw new RuntimeException(ex);
     }
   }
@@ -33,9 +36,10 @@ public class VoucherGatewayHedera implements VoucherGateway {
       return  new CryptoTransferTransaction(client)
           .addSender(AccountId.fromString(accountFrom), amount)
           .addRecipient(AccountId.fromString(accountTo), amount)
-          .setMemo(String.format("voucher transfer of %s", amount))
+          .setMemo(String.format("Voucher transfer of %s", amount))
           .executeForRecord();
     } catch (final HederaException ex) {
+      log.error(ex.getMessage(), ex);
       throw new RuntimeException(ex);
     }
   }
