@@ -14,6 +14,6 @@ public class GetBalanceNetshoes {
     private final HederaHelper hederaHelper;
 
     public long getTinybars() {
-        return voucherGateway.getBalance(hederaHelper.getOperatorId());
+        return voucherGateway.getBalance(hederaHelper.getNetshoesAccountId());
     }
 }
