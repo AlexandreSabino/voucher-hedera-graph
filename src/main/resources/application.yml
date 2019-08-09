@@ -16,7 +16,7 @@ logging:
 
 spring:
   application:
-    name: "VoucherGraph"
+    name: "voucher"
   data:
     mongodb:
       hostname: mongodb
