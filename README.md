@@ -14,8 +14,8 @@
 
 ## Usage
 
-`ssh
+```sh
 mvn install dockerfile:build
 
 docker-compose up
-`
+```
