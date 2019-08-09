@@ -2,14 +2,11 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.domains.VoucherEvent;
-import com.biscoito.voucher.domains.VoucherEvent.VoucherType;
+import com.biscoito.voucher.domains.VoucherEvent.EventType;
 import com.biscoito.voucher.exceptions.InsuficientFundsException;
 import com.biscoito.voucher.gateways.HederaHelper;
 import com.biscoito.voucher.gateways.VoucherEventGateway;
 import com.biscoito.voucher.gateways.VoucherGateway;
-import com.hedera.hashgraph.sdk.HederaException;
-import com.hedera.hashgraph.sdk.account.AccountId;
-import com.hedera.hashgraph.sdk.account.CryptoTransferTransaction;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +33,9 @@ public class TransferToNetshoes {
         log.debug("Netshoes balance before: {}", nsBalanceBefore);
         log.debug("Customer balance before: {}", customerBalanceBefore);
 
-        if (tinybarsCalculator.toRealInCents(customerBalanceBefore) <= 0L) {
-            throw new InsuficientFundsException("no money...");
+        if (tinybarsCalculator.toRealInCents(customerBalanceBefore) <= 0L
+            || tinybarsCalculator.toRealInCents(customerBalanceBefore) < amountInCents) {
+            throw new InsuficientFundsException("No funds from Customer");
         }
 
         final long tinybars = tinybarsCalculator.toTinybars(amountInCents);
@@ -56,8 +54,9 @@ public class TransferToNetshoes {
             .transactionFee(record.getTransactionFee())
             .description(record.getMemo())
             .when(LocalDateTime.now())
-            .amount(tinybarsCalculator.toRealInCents(tinybars))
-            .type(VoucherType.DEBIT)
+            .amountInCents(tinybarsCalculator.toRealInCents(tinybars))
+            .amountInCentsTinybar(tinybars)
+            .type(EventType.DEBIT)
             .build();
 
         return voucherEventGateway.save(event);

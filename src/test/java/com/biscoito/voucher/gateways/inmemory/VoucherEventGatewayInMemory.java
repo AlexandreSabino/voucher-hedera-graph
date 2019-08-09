@@ -1,6 +1,7 @@
 package com.biscoito.voucher.gateways.inmemory;
 
 import com.biscoito.voucher.domains.VoucherEvent;
+import com.biscoito.voucher.domains.VoucherEvent.EventType;
 import com.biscoito.voucher.gateways.VoucherEventGateway;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,5 +16,10 @@ public class VoucherEventGatewayInMemory implements VoucherEventGateway {
     final VoucherEvent _event = voucherEvent.toBuilder().id(UUID.randomUUID().toString()).build();
     events.add(_event);
     return _event;
+  }
+
+  @Override
+  public Collection<VoucherEvent> findAllByTypeSortable(final EventType type) {
+    return null;
   }
 }

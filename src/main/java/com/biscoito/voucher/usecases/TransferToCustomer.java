@@ -2,7 +2,7 @@ package com.biscoito.voucher.usecases;
 
 import com.biscoito.voucher.domains.Customer;
 import com.biscoito.voucher.domains.VoucherEvent;
-import com.biscoito.voucher.domains.VoucherEvent.VoucherType;
+import com.biscoito.voucher.domains.VoucherEvent.EventType;
 import com.biscoito.voucher.exceptions.InsuficientFundsException;
 import com.biscoito.voucher.gateways.HederaHelper;
 import com.biscoito.voucher.gateways.VoucherEventGateway;
@@ -35,8 +35,9 @@ public class TransferToCustomer {
         var nsBalanceBefore = voucherGateway.getBalance(hederaHelper.getOperatorId());
         var customerBalanceBefore = voucherGateway.getBalance(customer.getAccountId());
 
-        if (tinybarsCalculator.toRealInCents(nsBalanceBefore) <= 0L) {
-            throw new InsuficientFundsException("no money...");
+        if (tinybarsCalculator.toRealInCents(nsBalanceBefore) <= 0L
+            || tinybarsCalculator.toRealInCents(nsBalanceBefore) < amountInCents) {
+            throw new InsuficientFundsException("No funds from Netshoes");
         }
 
         log.debug("Netshoes balance before: {}", nsBalanceBefore);
@@ -53,14 +54,15 @@ public class TransferToCustomer {
         log.debug("Customer balance after: {}", customerBalanceAfter);
 
         final VoucherEvent event = VoucherEvent.builder()
-                .customerIdentifier(customerIdentifier)
-                .transactionHash(record.getTransactionHash())
-                .transactionFee(record.getTransactionFee())
-                .description(record.getMemo())
-                .when(LocalDateTime.now())
-                .type(VoucherType.CREDIT)
-                .amount(tinybarsCalculator.toRealInCents(tinybars))
-                .build();
+            .customerIdentifier(customerIdentifier)
+            .transactionHash(record.getTransactionHash())
+            .transactionFee(record.getTransactionFee())
+            .description(record.getMemo())
+            .when(LocalDateTime.now())
+            .type(EventType.CREDIT)
+            .amountInCents(tinybarsCalculator.toRealInCents(tinybars))//+ fee
+            .amountInCentsTinybar(tinybars)
+            .build();
 
         return voucherEventGateway.save(event);
     }

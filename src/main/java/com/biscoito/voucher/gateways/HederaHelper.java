@@ -19,10 +19,12 @@ public class HederaHelper {
     @Value("${hedera.NODE_ID}")
     private String nodeId;
 
+    //TODO rename netshoesAccountId
     @Getter
     @Value("${hedera.OPERATOR_ID}")
     private String operatorId;
 
+    //TODO rename netshoesKey
     @Getter
     @Value("${hedera.OPERATOR_KEY}")
     private String operatorKey;
@@ -33,10 +35,6 @@ public class HederaHelper {
 
     public AccountId getNodeId() {
         return AccountId.fromString(nodeId);
-    }
-
-    public AccountId getNSAccountId() {
-        return AccountId.fromString(operatorId);
     }
 
     public Client buildClient(final String accountId, final String key) {
