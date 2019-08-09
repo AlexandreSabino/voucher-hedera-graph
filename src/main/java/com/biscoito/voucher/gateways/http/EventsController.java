@@ -39,7 +39,7 @@ public class EventsController {
         .collect(Collectors.toList());
   }
 
-  @GetMapping
+  @GetMapping(path = "/user")
   @ResponseStatus(value = HttpStatus.OK)
   public Collection<VoucherEventOutput> findByUser(
       @RequestParam(name = "customerIdentifier") final String customerIdentifier) {
