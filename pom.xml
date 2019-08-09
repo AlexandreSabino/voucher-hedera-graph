@@ -25,6 +25,7 @@
 		<spock.reports.version>1.2.9</spock.reports.version>
         <fabric8.maven.plugin.version>3.5.38</fabric8.maven.plugin.version>
         <git-commit-plugin.version>2.2.4</git-commit-plugin.version>
+        <timestamp>${maven.build.timestamp}</timestamp>
 	</properties>
 
 	<dependencies>
